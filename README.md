@@ -9,61 +9,47 @@ Code adapted from YouTube tutorials by The Cherno and sudocpp:
 -   sudocpp
     -   https://www.youtube.com/playlist?list=PLsCsQorDHC9Wism5Xlp8ZKtKeGBeCJJ72
 
-## Usage
+# System Requirements
 
-### General
+-   `Windows-x86_64`
+-   `Linux` and `MacOS` are currently unsupported, please ignore any instructions for these systems
 
--   System Requirements
-    -   `Windows-x86_64`
--   Git Submodules
-    -   Run `git submodule update --init --recursive`
+# Git Submodules
 
-### CMake
+```
+git submodule update --init --recursive
+```
 
--   VSCode `CMake Tools: Build`
+# Build Instructions
 
-    1.  Install extension `CMake Tools`
-    2.  Press `Ctrl + Shift + P`
-    3.  Select `CMake: Build Target`
-        -   If no targets (choose one)
-            -   Select `CMake: Configure`
-            -   Type desired target
+## CMake
 
--   command-line
+```
+cmake -B build
+```
 
-    1.  Run `cmake -B build`
-    2.  Run `cmake --build build`
+```
+cmake --build build
+```
 
-### Premake
+## Premake
 
--   Windows `Batch file Solution`
+-   Windows `Solution`
+
+    -   inside `scripts` folder
 
     1.  Run `GenerateSolution.bat`
-    2.  Run `msbuild`
+    2.  Run `BuildSolution.bat`
 
--   Windows `Batch file Makefile`
+-   Linux/Mac `Makefile` (Unsupported)
 
-    1.  Run `GenerateMakefile.bat`
-    2.  Run `make`
+    -   inside `scripts` folder
 
--   command-line
+    1.  Run `GenerateMakefile.sh`
+    2.  Run `BuildMakefile.sh`
 
-    1.  Run `vendor\bin\Premake\premake5.exe <build type>`
-    2.  Run Corresponding command (`msbuild`, `make`, etc.)
+# Notes
 
-#### You may need to rerun commands or reload your window if your system does not recognize newly created files
-
-#### Files (libraries / executable files) will be stored in bin directory
-
-#### Intermediates (object files) will be stored in build directory
-
-### Helpful Commands
-
--   `git clean -dfx`
-    -   Remove all files not under source control
--   `git clean -dfxn`
-    -   Check what files `git clean -dfx` would remove
--   Run `CleanProjects.bat`
-    -   Remove all Makefiles and root `bin` / `bin-build` / `build` directories
--   Check `premake5.lua` in root directory for more premake commands
--   Check `tasks.json` and `launch.json` in `.vscode` directory for more tasks
+-   Targets will be stored in `bin` directory
+-   Intermediates will be stored in `bin-build` directory for `Premake`
+-   Intermediates will be stored in `build` directory for `CMake`

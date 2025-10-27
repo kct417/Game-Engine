@@ -71,8 +71,12 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+#CMake
+
+
 # Premake
-!/vendor/bin/Premake/premake5.exe
+/vendor/premake/bin
+*.make
 
 # Compilation files
 /bin

@@ -1,83 +1,61 @@
 cmake_minimum_required(VERSION 3.22)
-project(Sandbox)
+project(Sandbox LANGUAGES CXX)
 
-set_output_directories(DEBUG Debug)
-set_output_directories(RELEASE Release)
-set_output_directories(RELWITHDEBINFO RelWithDebInfo)
-set_output_directories(MINSIZEREL MinSizeRel)
+if(NOT TARGET Sandbox)
+    set(ENGINE_DIR "${CMAKE_SOURCE_DIR}/Engine")
 
-set(ENGINE_DIR ../Engine/)
+    set(SOURCE_FILES
+        src/Sandbox.cpp
+    )
 
-# Source Files
-set(SOURCE_FILES
+    set(INCLUDE_DIRS
+        include
+    )
 
-    src/Sandbox.cpp
+    set(SUB_PROJECTS
+        ${ENGINE_DIR}
+    )
 
-)
+    set(LIB_NAMES
+        Engine
+    )
 
-# Header Directories
-set(INCLUDE_DIRS
+    # Compile Project
+    message(STATUS "Creating Project '${PROJECT_NAME}'")
 
+    message(STATUS "Compiling source files '${SOURCE_FILES}' in '${PROJECT_NAME}'")
+    add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-
-)
-
-# Dependency CMakeLists.txt Locations
-set(SUB_PROJECTS
-
-   ${ENGINE_DIR}
-
-)
-
-# Library Names
-set(LIB_NAMES
-
-    Engine
-
-)
-
-# Compile Project
-message(STATUS "Compiling source files '${SOURCE_FILES}' in '${PROJECT_NAME}'")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-# Set Compile Flags
-if(WIN32)
-
-    target_compile_definitions(${PROJECT_NAME} PRIVATE GE_PLATFORM_WINDOWS)
-
-endif()
-
-# Include Directories
-message(STATUS "Including directories '${INCLUDE_DIRS}' in '${PROJECT_NAME}'")
-target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
-
-# Add Dependencies
-foreach(PROJECT IN LISTS SUB_PROJECTS)
-
-    message(STATUS "Including subproject '${PROJECT}' in '${PROJECT_NAME}'")
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT})
-
-    if(NOT TARGET ${PROJECT})
-
-        message(STATUS "Adding subproject '${PROJECT}' to '${PROJECT_NAME}'")
-        add_subdirectory(${PROJECT} ${PROJECT_NAME})
-
+    if(WIN32)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE GE_PLATFORM_WINDOWS)
     endif()
 
-endforeach()
+    # Include Directories
+    message(STATUS "Including directories '${INCLUDE_DIRS}' in '${PROJECT_NAME}'")
+    target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
 
-# Link Libraries
-message(STATUS "Linking libraries '${LIB_NAMES}' to '${PROJECT_NAME}'")
-target_link_libraries(${PROJECT_NAME} ${LIB_NAMES})
+    # Add Dependencies
+    foreach(PROJECT IN LISTS SUB_PROJECTS)
+        if(NOT TARGET ${PROJECT})
+            get_filename_component(SUBPROJECT_NAME ${PROJECT} NAME)
+            message(STATUS "Adding subproject '${SUBPROJECT_NAME}' to '${PROJECT_NAME}'")
+            add_subdirectory(${PROJECT} ${CMAKE_BINARY_DIR}/${SUBPROJECT_NAME})
+        endif()
+    endforeach()
 
-message(STATUS "Creating Project '${PROJECT_NAME}'")
+    message(STATUS "Linking libraries '${LIB_NAMES}' to '${PROJECT_NAME}'")
+    add_dependencies(${PROJECT_NAME} ${LIB_NAMES})
+    target_link_libraries(${PROJECT_NAME} ${LIB_NAMES})
 
-# Copy Engine Library to Output Directory
-add_custom_command(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "$<TARGET_FILE:Engine>"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    COMMENT "Copying Engine library to '${PROJECT_NAME}'"
-)
+    # Copy Engine Library to Output Directory
+    if(BUILD_SHARED_LIBS OR PROJECT_TYPE STREQUAL "SHARED")
+        add_custom_command(
+            TARGET ${PROJECT_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "$<TARGET_FILE:Engine>"
+                    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+            COMMENT "Copying Engine library to '${PROJECT_NAME}'"
+        )
+    endif()
+endif()
