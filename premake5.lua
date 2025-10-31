@@ -14,6 +14,8 @@ workspace "GameEngine"
     group "Dependencies"
         include "vendor/premake/dependencies"
         include "vendor/premake/glfw"
+        include "vendor/premake/glad"
+        include "vendor/premake/imgui"
     group ""
 
     group "Engine"

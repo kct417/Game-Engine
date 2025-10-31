@@ -1,19 +1,19 @@
 #include <Engine.h>
 
-class Layer : public Engine::Layer
+class ExampleLayer : public Engine::Layer
 {
 public:
-    Layer()
-        : Engine::Layer()
+    ExampleLayer()
+        : Engine::Layer("ExampleLayer")
     {
     }
 
-    void OnUpdate() override
+    virtual void OnUpdate() override
     {
         GE_CORE_INFO("Layer Update");
     }
 
-    void OnEvent(Engine::Event &event) override
+    virtual void OnEvent(Engine::Event &event) override
     {
         GE_CORE_INFO("{0}", event);
     }
@@ -24,7 +24,7 @@ class Sandbox : public Engine::Application
 public:
     Sandbox()
     {
-        PushLayer(new Layer());
+        PushLayer(new ExampleLayer());
     }
 
     ~Sandbox() {}

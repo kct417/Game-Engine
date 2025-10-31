@@ -2,8 +2,9 @@
 
 #include "Base.h"
 #include "Window.h"
-#include "LayerStack.h"
 #include "Events/ApplicationEvent.h"
+#include "LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Engine
 {
@@ -21,13 +22,18 @@ namespace Engine
         void PushLayer(Layer *layer);
         void PushOverlay(Layer *overlay);
 
+        inline static Application &Get() { return *s_Instance; }
+        inline Window &GetWindow() { return *m_Window; }
+
     private:
         bool OnWindowClose(WindowCloseEvent &event);
 
     private:
         bool m_Running = true;
+        static Application *s_Instance;
         std::unique_ptr<Window> m_Window;
         LayerStack m_LayerStack;
+        ImGuiLayer *m_ImGuiLayer;
     };
 
     Application *CreateApplication();

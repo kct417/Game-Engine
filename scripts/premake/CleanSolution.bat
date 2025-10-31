@@ -16,11 +16,8 @@ popd >nul
 @REM echo.
 
 pushd "%ROOT%"
-rmdir /s /q bin
 rmdir /s /q build
-del /s /q *.sln
-del /s /q *.vcxproj
-del /s /q *.vcxproj.filters
+del *.sln
 popd
 
 if /i "%~1" neq "nopause" pause

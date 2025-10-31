@@ -1,8 +1,11 @@
 project "Engine"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
-    dependson { "glfw" }
+    cppdialect "C++latest"
+    staticruntime "On"
+    dependson { "glfw", "glad", "imgui" }
 
+    location "%{wks.location}/build"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/build/" .. outputdir .. "/%{prj.name}")
 
@@ -11,41 +14,36 @@ project "Engine"
 
     files
     {
-        "%{IncludeDir.Engine}/**.h",
-        "%{SrcDir.Engine}/**.cpp"
+        "%{SrcDir.Engine}/**.cpp",
+        "%{IncludeDir.Engine}/**.h"
     }
 
     includedirs
     {
         "%{IncludeDir.Engine}",
         "%{IncludeDir.spdlog}",
-        "%{IncludeDir.glfw}"
+        "%{IncludeDir.glfw}",
+        "%{IncludeDir.glad}",
+        "%{IncludeDir.imgui}"
     }
 
     links
     {
-        "GLFW",
-        "opengl32"
+        "glfw",
+        "glad",
+        "imgui"
     }
 
+    defines { "_CRT_SECURE_NO_WARNINGS", "GLFW_INCLUDE_NONE" }
+
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "Off"
-        systemversion "latest"
-
-        defines
-        {
-            "GE_PLATFORM_WINDOWS",
-            "GE_BUILD_DLL"
-        }
-
-        links
-        {
-            "gdi32"
-        }
+        defines "GE_PLATFORM_WINDOWS"
+        links "gdi32"
 
     filter "action:vs*"
-        buildoptions {"/utf-8", "/wd4251"}
+        systemversion "latest"
+        warnings "Extra"
+        buildoptions { "/utf-8", "/wd4251" }
 
     filter "configurations:Debug"
         runtime "Debug"
@@ -56,10 +54,8 @@ project "Engine"
         runtime "Release"
         optimize "On"
         symbols "Off"
-        defines "GE_RELEASE"
 
     filter "configurations:Dist"
         runtime "Release"
         optimize "On"
         symbols "Off"
-        defines "GE_DIST"

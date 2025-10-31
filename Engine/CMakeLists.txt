@@ -1,18 +1,9 @@
-cmake_minimum_required(VERSION 3.22)
 project(Engine LANGUAGES CXX)
 
-if (NOT WIN32)
-    message(FATAL_ERROR "This project is only supported on Windows.")
-endif()
-
-# Compile Once
 if(NOT TARGET Engine)
-    set(SOURCE_FILES
-        src/Core/Application.cpp
-        src/Core/Log.cpp
-        src/Platform/Windows/WindowsWindow.cpp
-        src/Core/Layer.cpp
-        src/Core/LayerStack.cpp
+    file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+        src/*.cpp
+        include/*.h
     )
 
     set(INCLUDE_DIRS
@@ -27,46 +18,57 @@ if(NOT TARGET Engine)
     set(LIB_NAMES
         spdlog
         glfw
-        opengl32
+        glad
+        imgui
     )
 
-    # Compile Project
-    message(STATUS "Creating Project '${PROJECT_NAME}'")
-
-    # Options : SHARED , STATIC
-    set(PROJECT_TYPE SHARED CACHE STRING "Library type (SHARED/STATIC)")
-
-    message(STATUS "Compiling source files '${SOURCE_FILES}' in '${PROJECT_NAME}'")
-    add_library(${PROJECT_NAME} ${PROJECT_TYPE} ${SOURCE_FILES})
-
-    # Precompiled Headers
-    message(STATUS "Setting up precompiled header 'gepch.h' for '${PROJECT_NAME}'")
-    target_precompile_headers(${PROJECT_NAME} PRIVATE include/gepch.h)
-
-    if(WIN32)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE GE_PLATFORM_WINDOWS)
-    endif()
-    
-    if(${PROJECT_TYPE} STREQUAL "SHARED")
-        target_compile_definitions(${PROJECT_NAME} PRIVATE GE_BUILD_DLL)
-    endif()
-
-    target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:GE_ENABLE_ASSERTS>)
-
-    # Include Directories
-    message(STATUS "Including directories '${INCLUDE_DIRS}' in '${PROJECT_NAME}'")
-    target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
-
-    # Add Dependencies
-    foreach(PROJECT IN LISTS SUB_PROJECTS)
-        if(NOT TARGET ${PROJECT})
-            get_filename_component(SUBPROJECT_NAME ${PROJECT} NAME)
-            message(STATUS "Adding subproject '${SUBPROJECT_NAME}' to '${PROJECT_NAME}'")
-            add_subdirectory(${PROJECT} ${CMAKE_BINARY_DIR}/${SUBPROJECT_NAME})
+    foreach(SUB_PROJECT IN LISTS SUB_PROJECTS)
+        if(NOT TARGET ${SUB_PROJECT})
+            get_filename_component(SUBPROJECT_NAME ${SUB_PROJECT} NAME)
+            add_subdirectory(${SUB_PROJECT} ${CMAKE_BINARY_DIR}/${SUBPROJECT_NAME})
         endif()
     endforeach()
 
-    # Link Libraries
-    message(STATUS "Linking libraries '${LIB_NAMES}' to '${PROJECT_NAME}'")
+    set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad")
+    file(GLOB GLAD_SOURCES "${GLAD_DIR}/src/*.c")
+    add_library(glad STATIC ${GLAD_SOURCES})
+    target_include_directories(glad PUBLIC "${GLAD_DIR}/include")
+
+    set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui")
+    file(GLOB IMGUI_SOURCES "${IMGUI_DIR}/*.cpp")
+    add_library(imgui STATIC ${IMGUI_SOURCES})
+    target_include_directories(imgui PUBLIC ${IMGUI_DIR})
+    target_link_libraries(imgui PRIVATE glfw)
+
+    function(force_msvc_runtime target)
+        if (MSVC)
+            set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        endif()
+    endfunction()
+
+    force_msvc_runtime(spdlog)
+    force_msvc_runtime(glfw)
+    force_msvc_runtime(glad)
+    force_msvc_runtime(imgui)
+
+    set(PROJECT_TYPE STATIC CACHE STRING "Library type (SHARED/STATIC)")
+    add_library(${PROJECT_NAME} ${PROJECT_TYPE} ${SOURCE_FILES})
+    target_precompile_headers(${PROJECT_NAME} PRIVATE include/gepch.h)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        _CRT_SECURE_NO_WARNINGS
+        GLFW_INCLUDE_NONE
+    )
+    if(WIN32)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE GE_PLATFORM_WINDOWS)
+    endif()
+    if(${PROJECT_TYPE} STREQUAL "SHARED")
+        target_compile_definitions(${PROJECT_NAME} PRIVATE GE_BUILD_DLL)
+    endif()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        $<$<CONFIG:Debug>:GE_DEBUG>
+        $<$<CONFIG:Release>:GE_RELEASE>
+    )
+    target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
+    add_dependencies(${PROJECT_NAME} ${LIB_NAMES})
     target_link_libraries(${PROJECT_NAME} ${LIB_NAMES})
 endif()

@@ -12,9 +12,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 #     exit 0
 # fi
 
-rm -rfv "$PROJECT_ROOT/bin" "$PROJECT_ROOT/build"
-find "$PROJECT_ROOT" -name "Makefile" -print -delete
-find "$PROJECT_ROOT" -name "*.make" -print -delete
+rm -rfv "$PROJECT_ROOT/build" "$PROJECT_ROOT/Makefile"
 
 if [[ "$1" != "nopause" ]]; then
     echo "Press any key to continue . . . "

@@ -14,7 +14,17 @@ Code adapted from YouTube tutorials by The Cherno and sudocpp:
 -   `Windows-x86_64`
 -   `Linux` and `MacOS` are currently unsupported, please ignore any instructions for these systems
 
+# Usage
+
+-   Clone the repository with submodules:
+
+```
+git clone --recursive -j4 https://github.com/kct417/Game-Engine.git
+```
+
 # Git Submodules
+
+-   If you already cloned the repository without `--recursive`, initialize the submodules with:
 
 ```
 git submodule update --init --recursive
@@ -24,6 +34,8 @@ git submodule update --init --recursive
 
 ## CMake
 
+-   From the root directory
+
 ```
 cmake -B build
 ```
@@ -32,24 +44,24 @@ cmake -B build
 cmake --build build
 ```
 
-## Premake
+-   Inside `scripts/cmake` folder
 
 -   Windows `Solution`
 
-    -   inside `scripts` folder
-
-    1.  Run `GenerateSolution.bat`
-    2.  Run `BuildSolution.bat`
+    -   Run `BuildSolution.bat`
 
 -   Linux/Mac `Makefile` (Unsupported)
 
-    -   inside `scripts` folder
+    -   Run `BuildMakefile.sh`
 
-    1.  Run `GenerateMakefile.sh`
-    2.  Run `BuildMakefile.sh`
+## Premake
 
-# Notes
+-   Inside `scripts/premake` folder
 
--   Targets will be stored in `bin` directory
--   Intermediates will be stored in `bin-build` directory for `Premake`
--   Intermediates will be stored in `build` directory for `CMake`
+-   Windows `Solution`
+
+    -   Run `BuildSolution.bat`
+
+-   Linux/Mac `Makefile` (Unsupported)
+
+    -   Run `BuildMakefile.sh`

@@ -36,7 +36,7 @@ namespace Engine
     };
 
 #define EVENT_CLASS_TYPE(type)                                                  \
-    static EventType GetStaticType() { return EventType::type; }                \
+    inline static EventType GetStaticType() { return EventType::type; }         \
     virtual EventType GetEventType() const override { return GetStaticType(); } \
     virtual const char *GetName() const override { return #type; }
 
@@ -83,9 +83,6 @@ namespace Engine
         Event &m_Event;
     };
 
-    inline std::string format_as(const Event &event)
-    {
-        return event.ToString();
-    }
+    inline std::string format_as(const Event &event) { return event.ToString(); }
 
 }

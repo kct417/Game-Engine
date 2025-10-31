@@ -13,19 +13,28 @@ namespace Engine
         WindowsWindow(const WindowProps &props);
         virtual ~WindowsWindow();
 
-        void OnUpdate() override;
+        virtual void OnUpdate() override;
 
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
 
-        // Window attributes
-        inline void SetEventCallback(const EventCallbackFunction &callback) override { m_Data.EventCallback = callback; }
-        void SetVSync(bool enabled) override;
-        bool IsVSync() const override;
+        virtual void SetEventCallback(const EventCallbackFunction &callback) override { m_Data.EventCallback = callback; }
+        virtual void SetVSync(bool enabled) override;
+        virtual bool IsVSync() const override;
+
+        virtual void *GetNativeWindow() const override { return m_Window; }
 
     private:
-        virtual void Init(const WindowProps &props);
-        virtual void Shutdown();
+        void Init(const WindowProps &props);
+        void Shutdown();
+
+        static void OnWindowResizeEvent(GLFWwindow *window, int width, int height);
+        static void OnWindowCloseEvent(GLFWwindow *window);
+        static void OnKeyPressedEvent(GLFWwindow *window, int key, int scancode, int action, int mods);
+        static void OnKeyTypedEvent(GLFWwindow *window, unsigned int codepoint);
+        static void OnMouseButtonPressedEvent(GLFWwindow *window, int button, int action, int mods);
+        static void OnMouseMovedEvent(GLFWwindow *window, double xpos, double ypos);
+        static void OnMouseScrolledEvent(GLFWwindow *window, double xoffset, double yoffset);
 
     private:
         GLFWwindow *m_Window;

@@ -16,7 +16,6 @@ popd >nul
 @REM echo.
 
 pushd "%ROOT%"
-call rmdir /s /q bin
 call rmdir /s /q build
 popd
 

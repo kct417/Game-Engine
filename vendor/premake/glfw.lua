@@ -1,7 +1,9 @@
 project "glfw"
     kind "StaticLib"
     language "C"
+    staticruntime "On"
 
+    location "%{wks.location}/build"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/build/" .. outputdir .. "/%{prj.name}")
 
@@ -24,17 +26,12 @@ project "glfw"
         "%{SrcDir.glfw}/null_platform.h",
         "%{SrcDir.glfw}/null_joystick.h",
         "%{SrcDir.glfw}/null_init.c",
-
         "%{SrcDir.glfw}/null_monitor.c",
         "%{SrcDir.glfw}/null_window.c",
-        "%{SrcDir.glfw}/null_joystick.c",
-
+        "%{SrcDir.glfw}/null_joystick.c"
     }
-    filter "system:linux"
-        pic "On"
-        systemversion "latest"
-        staticruntime "Off"
 
+    filter "system:linux"
         files
         {
             "%{SrcDir.glfw}/x11_init.c",
@@ -49,16 +46,9 @@ project "glfw"
             "%{SrcDir.glfw}/linux_joystick.c"
         }
 
-        defines
-        {
-            "_GLFW_X11"
-            
-        }
+        defines { "_GLFW_X11" }
 
     filter "system:windows"
-        systemversion "latest"
-        staticruntime "Off"
-
         files
         {
             "%{SrcDir.glfw}/win32_init.c",
@@ -75,20 +65,21 @@ project "glfw"
             "%{SrcDir.glfw}/osmesa_context.c"
         }
 
-        defines 
-        { 
-            "_GLFW_WIN32",
-            "_CRT_SECURE_NO_WARNINGS"
+        defines { "_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32" }
 
-        }
+    filter "action:vs*"
+        systemversion "latest"
 
     filter "configurations:Debug"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
+        runtime "Release"
         optimize "On"
         symbols "Off"
 
     filter "configurations:Dist"
+        runtime "Release"
         optimize "On"
         symbols "Off"

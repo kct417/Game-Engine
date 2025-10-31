@@ -1,9 +1,7 @@
-project "Sandbox"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++latest"
+project "glad"
+    kind "StaticLib"
+    language "C"
     staticruntime "On"
-    dependson { "Engine" }
 
     location "%{wks.location}/build"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
@@ -11,31 +9,22 @@ project "Sandbox"
 
     files
     {
-        "%{SrcDir.Sandbox}/**.cpp",
-        "%{IncludeDir.Sandbox}/**.h"
+        "%{SrcDir.glad}/gl.c",
+        "%{IncludeDir.glad}/glad/gl.h",
+        "%{IncludeDir.glad}/KHR/khrplatform.h"
     }
 
     includedirs
     {
-        "%{IncludeDir.Engine}",
-        "%{IncludeDir.spdlog}",
-        "%{IncludeDir.imgui}"
+        "%{IncludeDir.glad}"
     }
-
-    links "Engine"
-
-    filter "system:windows"
-        defines "GE_PLATFORM_WINDOWS"
 
     filter "action:vs*"
         systemversion "latest"
-        warnings "Extra"
-        buildoptions { "/utf-8", "/wd4251" }
 
     filter "configurations:Debug"
         runtime "Debug"
         symbols "On"
-        defines "GE_DEBUG"
 
     filter "configurations:Release"
         runtime "Release"
