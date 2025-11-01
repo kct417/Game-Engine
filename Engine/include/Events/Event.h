@@ -35,10 +35,10 @@ namespace Engine
         EventCategoryMouseButton = BIT(4)
     };
 
-#define EVENT_CLASS_TYPE(type)                                                  \
-    inline static EventType GetStaticType() { return EventType::type; }         \
-    virtual EventType GetEventType() const override { return GetStaticType(); } \
-    virtual const char *GetName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)                                                         \
+    inline static EventType GetStaticType() { return EventType::type; }                \
+    inline virtual EventType GetEventType() const override { return GetStaticType(); } \
+    inline virtual const char *GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) \
     virtual int GetCategoryFlags() const override { return category; }
@@ -48,15 +48,18 @@ namespace Engine
         friend class EventDispatcher;
 
     public:
+        Event() = default;
+        virtual ~Event() = default;
+
         virtual EventType GetEventType() const = 0;
         virtual const char *GetName() const = 0;
         virtual int GetCategoryFlags() const = 0;
-        virtual std::string ToString() const { return GetName(); }
+        inline virtual std::string ToString() const { return GetName(); }
 
         inline bool IsHandled() const { return m_Handled; }
         inline bool IsInCategory(EventCategory category) const { return GetCategoryFlags() & category; }
 
-    protected:
+    private:
         bool m_Handled = false;
     };
 

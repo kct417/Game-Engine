@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Base.h"
-#include "Window.h"
+#include "Core/Base.h"
+#include "Core/Window.h"
+#include "Layers/LayerStack.h"
+#include "Layers/ImGuiLayer.h"
 #include "Events/ApplicationEvent.h"
-#include "LayerStack.h"
-#include "ImGui/ImGuiLayer.h"
 
 namespace Engine
 {
@@ -13,7 +13,7 @@ namespace Engine
     {
     public:
         Application();
-        virtual ~Application();
+        virtual ~Application() = default;
 
         void Run();
 

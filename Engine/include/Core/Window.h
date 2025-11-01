@@ -25,7 +25,8 @@ namespace Engine
     public:
         using EventCallbackFunction = std::function<void(Event &)>;
 
-        virtual ~Window() {}
+        Window() = default;
+        virtual ~Window() = default;
 
         virtual void OnUpdate() = 0;
 

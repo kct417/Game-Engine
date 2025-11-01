@@ -18,11 +18,11 @@ namespace Engine
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
 
-        virtual void SetEventCallback(const EventCallbackFunction &callback) override { m_Data.EventCallback = callback; }
+        inline virtual void SetEventCallback(const EventCallbackFunction &callback) override { m_Data.EventCallback = callback; }
         virtual void SetVSync(bool enabled) override;
         virtual bool IsVSync() const override;
 
-        virtual void *GetNativeWindow() const override { return m_Window; }
+        inline virtual void *GetNativeWindow() const override { return m_Window; }
 
     private:
         void Init(const WindowProps &props);

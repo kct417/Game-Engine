@@ -10,12 +10,13 @@ public:
 
     virtual void OnUpdate() override
     {
-        GE_CORE_INFO("Layer Update");
+        if (Engine::Input::IsKeyPressed(GE_KEY_TAB))
+            GE_INFO("Tab");
     }
 
     virtual void OnEvent(Engine::Event &event) override
     {
-        GE_CORE_INFO("{0}", event);
+        (void)event;
     }
 };
 

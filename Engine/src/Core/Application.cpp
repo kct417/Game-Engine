@@ -1,6 +1,7 @@
 #include "gepch.h"
-
 #include "Core/Application.h"
+
+#include "Inputs/Input.h"
 
 #include <glad/gl.h>
 
@@ -20,8 +21,6 @@ namespace Engine
         m_ImGuiLayer = new ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
     }
-
-    Application::~Application() {}
 
     void Application::Run()
     {

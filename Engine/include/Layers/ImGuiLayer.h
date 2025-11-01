@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Base.h"
-#include "Core/Layer.h"
+#include "Layers/Layer.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -14,7 +14,6 @@ namespace Engine
     {
     public:
         ImGuiLayer();
-        ~ImGuiLayer();
 
         virtual void OnAttach() override;
         virtual void OnDetach() override;

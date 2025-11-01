@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Base.h"
-#include "Layer.h"
-
-#include <vector>
+#include "Core/Base.h"
+#include "Layers/Layer.h"
 
 namespace Engine
 {
